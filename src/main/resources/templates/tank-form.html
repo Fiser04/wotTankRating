@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TankRate | Vehicle Commissioning</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root { --wot-red: #dc3545; --wot-dark: #1a1d20; --wot-gold: #ffc107; }
+        body { background-color: #f0f2f5; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        .editor-card { border: none; border-radius: 12px; overflow: hidden; }
+        .editor-header { background: var(--wot-dark); border-bottom: 4px solid var(--wot-red); padding: 1.5rem; }
+        .form-label { font-size: 0.8rem; text-transform: uppercase; font-weight: 700; color: #6c757d; letter-spacing: 0.5px; }
+        .form-control, .form-select { border: 1px solid #dee2e6; padding: 0.6rem 0.8rem; border-radius: 8px; }
+        .equipment-well { background: #fff; border: 1px solid #dee2e6; border-radius: 8px; max-height: 250px; overflow-y: auto; padding: 15px; }
+        .section-title { font-size: 0.9rem; font-weight: 800; color: var(--wot-dark); display: flex; align-items: center; margin-bottom: 1.5rem; }
+        .section-title::after { content: ""; flex: 1; height: 1px; background: #dee2e6; margin-left: 15px; }
+        .btn-save { background-color: var(--wot-red); border: none; padding: 0.6rem 2rem; font-weight: 600; color: white; border-radius: 8px; }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-dark bg-dark shadow-sm">
+    <div class="container"><a class="navbar-brand fw-bold" href="/"><i class="bi bi-shield-fill-check text-danger me-2"></i>TankRate</a></div>
+</nav>
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="card editor-card shadow-lg">
+                <div class="editor-header text-white">
+                    <div class="d-flex align-items-center"><i class="bi bi-pencil-square fs-3 me-3 text-danger"></i><h4 class="mb-0 fw-bold" th:text="${tank.id == null ? 'New Vehicle Commission' : 'Update Intelligence: ' + tank.name}">Tank Editor</h4></div>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form th:action="@{/tanks/save}" th:object="${tank}" method="post">
+                        <input type="hidden" th:field="*{id}" />
+                        <div class="section-title">01. GENERAL CLASSIFICATION</div>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6"><label class="form-label">Vehicle Name</label><input type="text" th:field="*{name}" class="form-control" required></div>
+                            <div class="col-md-6"><label class="form-label">Nation</label><select th:field="*{nations}" class="form-select"><option th:each="n : ${nations}" th:value="${n}" th:text="${n}"></option></select></div>
+                            <div class="col-md-6"><label class="form-label">Class</label><select th:field="*{tankClass}" class="form-select"><option th:each="c : ${tankClass}" th:value="${c}" th:text="${c}"></option></select></div>
+                            <div class="col-md-6"><label class="form-label">Tier</label><select th:field="*{tier}" class="form-select"><option th:each="t : ${tier}" th:value="${t}" th:text="${t}"></option></select></div>
+                            <div class="col-12"><label class="form-label">Description</label><textarea th:field="*{description}" class="form-control" rows="2"></textarea></div>
+                        </div>
+                        <div class="section-title">02. COMBAT EVALUATION</div>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-3"><label class="form-label">Firepower</label><select th:field="*{difficultyFirepower}" class="form-select"><option th:each="r : ${rating}" th:value="${r}" th:text="${r}"></option></select></div>
+                            <div class="col-md-3"><label class="form-label">Armor</label><select th:field="*{difficultyArmour}" class="form-select"><option th:each="r : ${rating}" th:value="${r}" th:text="${r}"></option></select></div>
+                            <div class="col-md-3"><label class="form-label">Mobility</label><select th:field="*{difficultyMobility}" class="form-select"><option th:each="r : ${rating}" th:value="${r}" th:text="${r}"></option></select></div>
+                            <div class="col-md-3"><label class="form-label">Skill Floor</label><select th:field="*{difficultyTank}" class="form-select bg-dark text-white"><option th:each="d : ${difficulties}" th:value="${d}" th:text="${d}"></option></select></div>
+                        </div>
+                        <div class="section-title">03. RECOMMENDED LOADOUT</div>
+                        <div class="mb-4">
+                            <div class="equipment-well shadow-sm"><div class="row g-2"><div class="col-md-4" th:each="item : ${allEquipment}"><div class="form-check"><input class="form-check-input equipment-checkbox" type="checkbox" th:field="*{equipment}" th:value="${item.id}" th:id="${'eq' + item.id}"><label class="form-check-label small fw-semibold" th:for="${'eq' + item.id}" th:text="${item.name}"></label></div></div></div></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-5 pt-3 border-top"><a th:href="@{/tanks}" class="text-decoration-none text-muted small fw-bold">CANCEL</a><button type="submit" class="btn btn-save">Save Configuration</button></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkboxes = document.querySelectorAll('.equipment-checkbox');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (document.querySelectorAll('.equipment-checkbox:checked').length > 3) {
+                    this.checked = false;
+                    alert("Maximum 3 equipment items allowed.");
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

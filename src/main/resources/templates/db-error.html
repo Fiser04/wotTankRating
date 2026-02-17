@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>TankRate | Connection Error</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-dark mb-4 shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/">TankRate</a>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <div class="row justify-content-center text-center">
+        <div class="col-lg-6">
+            <div class="card shadow border-0 py-5">
+                <div class="card-body">
+                    <div class="mb-4">
+                        <div class="display-1 text-danger">⚠️</div>
+                    </div>
+                    <h2 class="fw-bold text-dark">Database Offline</h2>
+                    <p class="text-muted">
+                        We are currently unable to connect to the armored vehicle database.
+                        Please ensure your PostgreSQL service is running and try again.
+                    </p>
+                    <hr class="mx-5 my-4">
+                    <div class="d-grid gap-2 col-6 mx-auto">
+                        <a href="/" class="btn btn-primary shadow-sm">Try to Reconnect</a>
+                    </div>
+                </div>
+            </div>
+            <p class="mt-4 text-muted small">If you are the administrator, check your application.properties for DB credentials.</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
