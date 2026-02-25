@@ -9,12 +9,11 @@ Simple website for rating and choosing preffered equipment build using:
 - free Postgres database (in docker for example)
 
 ### Set-up database
-if you don't have an right database with the right scheme
-  - in file **src/main/resources/application.properties** change this line from **none** to **create** and configure the connection details
+1) in file **src/main/resources/application.properties**
 `spring.jpa.hibernate.ddl-auto=none` -> `spring.jpa.hibernate.ddl-auto=create`
-
-run the code<br>
-switch it back to none
+2) configure connetion details
+3) run the code<br>
+4) switch it back to none
 
 ### Running the app
 **Linux/MacOS**
